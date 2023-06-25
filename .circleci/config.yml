@@ -38,7 +38,7 @@ commands:
           working_directory: ./backend
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure https://kvdb.io/FWfT3EJvSc3D57Yhp76CdN/migration_<< parameters.id >>)
+            SUCCESS=$(curl --insecure https://kvdb.io/VavzKW56D9fhHgeCDgUVaW/migration_<< parameters.id >>)
             echo $SUCCESS
             if [[ "$SUCCESS" == "1" ]]
             then
@@ -188,7 +188,7 @@ jobs:
                --query 'Reservations[*].Instances[*].PublicIpAddress' \
                --output text)
             echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.ini
-            curl --insecure https://kvdb.io/FWfT3EJvSc3D57Yhp76CdN/backendurl -d $(echo $BACKEND_PUBLIC_IP)
+            curl --insecure https://kvdb.io/VavzKW56D9fhHgeCDgUVaW/backendurl -d $(echo $BACKEND_PUBLIC_IP)
             cat .circleci/ansible/inventory.ini
       - persist_to_workspace:
           root: ~/
@@ -204,7 +204,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-          - "66:1a:1c:98:8e:bf:f8:80:a9:0f:59:06:b1:70:cf:3c"
+          - "f7:b2:19:44:28:c9:5f:30:49:49:a1:f6:c0:ef:4f:f1"
       - run:
           name: Install dependencies
           command: |
@@ -266,7 +266,7 @@ jobs:
             if grep -q "success" ~/project/backend/migrations_dump.txt
             then
               # If you are using kvdb.io, generate the bucket ID "FWfT3EJvSc3D57Yhp76CdN" in your local terminal first
-              curl --insecure https://kvdb.io/FWfT3EJvSc3D57Yhp76CdN/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl --insecure https://kvdb.io/VavzKW56D9fhHgeCDgUVaW/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -325,7 +325,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-          - "66:1a:1c:98:8e:bf:f8:80:a9:0f:59:06:b1:70:cf:3c"
+          - "f7:b2:19:44:28:c9:5f:30:49:49:a1:f6:c0:ef:4f:f1"
       - attach_workspace:
           at: ./
       - restore_cache:
@@ -368,7 +368,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            export BACKEND_URL=$(curl --insecure https://kvdb.io/FWfT3EJvSc3D57Yhp76CdN/backendurl)
+            export BACKEND_URL=$(curl --insecure https://kvdb.io/VavzKW56D9fhHgeCDgUVaW/backendurl)
             echo $BACKEND_URL
             curl "$BACKEND_URL:3030/api/status"
             if curl "$BACKEND_URL:3030/api/status" | grep "ok"
@@ -405,7 +405,7 @@ jobs:
             list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
             --no-paginate --output text)
             echo $OldWorkflowID
-            curl --insecure https://kvdb.io/FWfT3EJvSc3D57Yhp76CdN/OldWorkflowID -d ${OldWorkflowID}
+            curl --insecure https://kvdb.io/VavzKW56D9fhHgeCDgUVaW/OldWorkflowID -d ${OldWorkflowID}
       - run:
           name: Update Cloud Front distribution
           command: |
@@ -428,7 +428,7 @@ jobs:
           name: Remove old stacks and files
           command: |
             # Fetch the Old workflow ID
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/FWfT3EJvSc3D57Yhp76CdN/OldWorkflowID)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/VavzKW56D9fhHgeCDgUVaW/OldWorkflowID)
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
             # Fetch the stack names
@@ -455,7 +455,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "66:1a:1c:98:8e:bf:f8:80:a9:0f:59:06:b1:70:cf:3c"
+            - "f7:b2:19:44:28:c9:5f:30:49:49:a1:f6:c0:ef:4f:f1"
       - run:
           name: Install dependencies
           command: |
@@ -490,7 +490,7 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
-              only: [master]
+              only: [main]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
